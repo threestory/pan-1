@@ -67,28 +67,30 @@
 			<!-- Begin: Content -->
 		  <div id="content">
           	<div id="interact_wrap"><div id="interact">
-            <p id="menu">Datasets: <select id="select_dataset" style="width:158px;">
-              <optgroup label="Applications">
-              <option>All Applications</option>
-          	  <option>Applications by Subcategory</option>
-          	  <option>File Sharing</option>
-          	  <option>Photo-Video</option>
-          	  <option>Remote Access</option>
-          	  <option>Social Networking</option>
-          	  <option>Proxy &amp; Encrypted Tunnels</option>
-          	  </optgroup>
-          	  <optgroup label="Threats">
-          	  <option>All Threats</option>
-          	  <option>Exploits by Application</option>
-          	  <option>Malware by Application</option></select>
-          	</optgroup>
-              <select id="select_region" style="width:117px;">
-              <option>Worldwide</option>
-          	  <option>Americas/Canada</option>
-          	  <option>Europe</option>
-          	  <option>Asia-Pacific</option>
-          	  <option>Japan</option>
-          	  </select></p>
+            <p id="menu">Datasets: 
+            	<select id="select_dataset" style="width:158px;">
+                	<optgroup label="Applications">
+              			<option selected value="All Applications">All Applications</option>
+			          	<option value="Applications by Subcategory">Applications by Subcategory</option>
+			          	<option value="File Sharing">File Sharing</option>
+			          	<option value="Photo-Video">Photo-Video</option>
+			          	<option value="Remote Access">Remote Access</option>
+			          	<option value="Social Networking">Social Networking</option>
+			          	<option value="Proxy &amp; Encrypted Tunnels">Proxy &amp; Encrypted Tunnels</option>
+          			</optgroup>
+          	  		<optgroup label="Threats">
+          	  			<option value="All Threats">All Threats</option>
+          	  			<option value="Exploits by Application">Exploits by Application</option>
+          	  			<option value="Malware by Application">Malware by Application</option></select>
+          			</optgroup>
+              	<select id="select_region" style="width:117px;">
+              		<option value="Worldwide" selected>Worldwide</option>
+		          	<option value="Americas/Canada">Americas/Canada</option>
+		          	<option value="Europe">Europe</option>
+		          	<option value="Asia-Pacific">Asia-Pacific</option>
+		          	<option value="Japan">Japan</option>
+          		</select>
+          	</p>
 
             <div id="view_selection" class="btn-group">
         <a href="#" id="all" class="btn active">All</a>

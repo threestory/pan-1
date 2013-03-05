@@ -46,7 +46,7 @@
 	var p_rand=function(n) {return Math.floor(Math.random()*n);}
 	
 	var srsly=function(b) {return Math.floor(+b/1000000)} // the packing function is not good with very large numbers.
-
+	var threatByApp = function() {return (d3.select("#select_dataset").property("value")!=="All Threats")}
 	var present=function(number,option) {	// sensible options to write numbers. works rather well for small or large numbers alike.
 		if(option==="%") {
 			return d3.format("4.2%")(number);
@@ -187,10 +187,13 @@
 			pan.selection=pan.selection.filter(function(d) {return d.name!=="0";})
 
 			if (d3.select("#select_dataset").property("value")=="All Threats") {
-				pan.selection=pan.selection.sort(function(a,b) {return b.detections-a.detections}).slice(0,250)
+				pan.selection=pan.selection.slice(0).sort(function(a,b) {return b.detections-a.detections}).slice(0,250)
 			} else {
 				var top25=pan.selection.filter(function(d) {return d.category=="total";}).slice(0).sort(function(a,b) {return b.detections-a.detections;}).slice(0,25).map(function(d) {return d.application;})
-				pan.selection=pan.selection.filter(function(d) {return top25.indexOf(d.application)>-1&&d.category!="total";})	
+//				pan.selection=pan.selection.filter(function(d) {return top25.indexOf(d.application)>-1&&d.category!="total";})	
+				pan.selection=pan.selection.filter(function(d) {return top25.indexOf(d.application)>-1
+					//&&d.category=="total"
+					;})	
 			}
 		}
 
@@ -326,7 +329,16 @@
 		// noting that there are 26 circles in the mockup, and circa 1300 data items in the dataset.
 
 		var largeenough=pan.selection.slice(0);
+		
+		// only totals for the all threats views of exploits/malware by application
+
+		/*if (d3.select("#select_dataset").property("value")!="All Threats") {
+			largeenough=largeenough.filter(function(d) {return d.category=="total";})
+			console.log("largeenough.length",largeenough.length)
+		}*/
+
 		largeenough.sort(function(a,b) {return b.detections-a.detections}).slice(0,100);
+
 
 
 		var c1=largeenough.map(function(d) {return (+d.detections);})
@@ -339,8 +351,18 @@
 			pan.selection[pan.dhash[d.id]].pos[0].max=415;
 		})
 
+		
 		// now by category
 
+		//var myselection;
+
+		// but no totals for the by category view of exploits/malware by application
+
+		/*if (d3.select("#select_dataset").property("value")!="All Threats") {
+			myselection=pan.selection.slice(0).filter(function(d) {return d.category!="total";})
+			console.log("myselection.length",myselection.length)
+		}*/
+		
 		// preliminary step: we compute sizes of the various category totals
 		var catsum=d3.nest()	
 			.key(function(d) {return d.category;})
@@ -371,8 +393,25 @@
 			})
 		})
 
+
 		// and by type
+		
+
+
+		// for view by type, we revert to totals for exploits/malware by application
+
+		/*if (d3.select("#select_dataset").property("value")!="All Threats") {
+			myselection=pan.selection.slice(0).filter(function(d) {return d.category=="total";})
+			console.log("myselection.length",myselection.length)
+
+		}*/
+
+
 		// similar first step
+
+
+
+
 		var typesum=d3.nest()	
 			.key(function(d) {return d.threatType;})
 			.rollup(function(d) {return d3.sum(d,function(e) {return (+e.detections);})})
@@ -403,6 +442,8 @@
 		})
 
 		// finally, scatterplot category/frequency
+
+		// that's not really necessary, but if there is a way the user finds itself in the view by frequency for threats, rather show something than crash the app
 
 		var rScale=d3.scale.linear().domain([0,100000000]).range([1,20]);
 		var xScale=d3.scale.linear().range([115,865]);
@@ -628,9 +669,19 @@
 				nodes[i][k]=p[k];
 			})
 			if (pan.strata&&mode<3) {
-				nodes[i].x=((Math.random()-.5)*d.max+d.tx||d.tx);
+				nodes[i].x=((Math.random()-.5)*d.max+.5*d.max+d.tx||d.tx);
 				nodes[i].y=((d3.scale.linear().range([d.ty-d.max/2,d.ty+d.max/2]).domain([5,0])(+d.risk||0))||d.ty);
 			}
+			pan.nodes1=nodes.slice(0);
+			if(pan.main==="threats"&&threatByApp()) {
+					nodes.forEach(function(n) {
+						if(n.category==="total"&&mode===1||n.category!=="total"&&mode!==1) {
+							n.r=0
+						}
+					})
+			}
+			pan.nodes2=nodes.slice(0);
+
 			if(nodes[i].r) {
 				nodes[i].r=pan.selection[i].pos[0].r;
 				if(nodes[i].r<pan.minrad) {nodes[i].r=pan.minrad;}
@@ -638,7 +689,6 @@
 			};
 		})
 		nodes.sort(function(a,b) {return b.r-a.r;});
-
 		// updating written info
 		d3.select("#data_left").selectAll(".value").data(pan.dataLeft).html(String)
 		d3.select("#data_right").selectAll(".value").data(pan.dataRight).html(String)
@@ -694,9 +744,9 @@
 			.style({
 				stroke:"none",
 				  fill:function(d) {return riskColors[d.risk]},
-			   opacity:function(d) {if (!d.severity) {return .9;} else {
+			   "fill-opacity":function(d) {if (!d.severity) {return .9;} else {
 			   	//return {"medium":.2,"high":.5,"critical":9}[d.severity];
-			   	return d3.scale.linear().domain([0,10000000]).range([.3,.9])(+d.detections);
+			   	return d3.scale.linear().domain([0,.8*d3.max(nodes,function(d) {return d.detections})]).range([.3,.9])(+d.detections);
 			   }}})
 
 		circles=pan.svg.selectAll(".circles").data(nodes);
@@ -706,9 +756,9 @@
 					 r:function(d) {return d.r}
 			})
 			.style({stroke:"none",fill:function(d) {return riskColors[d.risk]},
-					opacity:function(d) {if (!d.severity) {return .9;} else {
+					"fill-opacity":function(d) {if (!d.severity) {return .9;} else {
 			   	//return {"medium":.2,"high":.5,"critical":9}[d.severity];
-			   	return d3.scale.linear().domain([0,5000000]).range([.3,.9])(+d.detections);
+			   	return d3.scale.linear().domain([0,.8*d3.max(nodes,function(d) {return d.detections})]).range([.3,.9])(+d.detections);
 			   }}
 		})
 		
@@ -767,9 +817,9 @@
 			pan.panel.selectAll("p").append("span").classed("value",1).html(function(d) {return (d.title?"":"&nbsp;")+d.value;}).style("font-weight",function(d) {return d.title?"bold":null;})
 			
 			var xy=[];
-				xy[0]=d3.select("#"+pan.id).property("offsetLeft")+d.x-110;
-				xy[1]=d3.select("#"+pan.id).property("offsetTop")+d.y-d.r+15;
-
+				xy[0]=d3.select("#"+pan.id).property("offsetLeft")+d3.min([700,d.x+d.r+20]);
+				xy[1]=d3.select("#"+pan.id).property("offsetTop")+d3.select(".infotip").property("clientHeight")+d.y+d.r;
+			
 			pan.panel.transition().style({top:xy[1]+"px",left:xy[0]+"px",display:"block",width:"200px"});
 			d3.select(this).style("stroke","black");
 		})
@@ -876,6 +926,7 @@
 		}
 
 	}
+
 
 pan.setInterface = function() {
 		if(!d3.select("#select_dataset").property("value")) {d3.select("#select_dataset").select("option").property("selected",true);}

@@ -820,7 +820,7 @@
 			
 			var xy=[];
 				xy[0]=d3.select("#"+pan.id).property("offsetLeft")+d3.min([700,d.x-110]);
-				xy[1]=d3.select("#"+pan.id).property("offsetTop")+d.y-d.r+15;
+				xy[1]=d3.select("#"+pan.id).property("offsetTop")+d.y-d.r-d3.select(".infotip").property("clientHeight");
 			
 			pan.panel.transition().style({top:xy[1]+"px",left:xy[0]+"px",display:"block",width:"200px"});
 			d3.select(this).style("stroke","black");

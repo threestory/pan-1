@@ -799,7 +799,9 @@
 					{label:"% of total bandwidth:",value:d3.format("4.2%")(+d.bandwidth/pan.totalB)},	
 					{label:"Sessions consumed:",value:d3.format(",")(+d.sessions)},
 					{label:"% of total sessions:",value:d3.format("4.2%")(+d.sessions/pan.totalS)},	
-					{label:"Frequency of use:",value:isNaN(d.frequency)?"-":d3.format("4.2%")(+d.frequency)}
+					{label:"Frequency of use:",value:isNaN(d.frequency)?"-":d3.format("4.2%")(+d.frequency)},
+					{label:"Ports:",value:d.ports}
+
 				];	}
 			} else {
 				infotip=[

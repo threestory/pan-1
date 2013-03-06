@@ -669,7 +669,7 @@
 				nodes[i][k]=p[k];
 			})
 			if (pan.strata&&mode<3) {
-				nodes[i].x=((Math.random()-.5)*d.max+.5*d.max+d.tx||d.tx);
+				nodes[i].x=((Math.random()-.5)*d.max+d.tx||d.tx);
 				nodes[i].y=((d3.scale.linear().range([d.ty-d.max/2,d.ty+d.max/2]).domain([5,0])(+d.risk||0))||d.ty);
 			}
 			pan.nodes1=nodes.slice(0);
@@ -817,8 +817,8 @@
 			pan.panel.selectAll("p").append("span").classed("value",1).html(function(d) {return (d.title?"":"&nbsp;")+d.value;}).style("font-weight",function(d) {return d.title?"bold":null;})
 			
 			var xy=[];
-				xy[0]=d3.select("#"+pan.id).property("offsetLeft")+d3.min([700,d.x+d.r+20]);
-				xy[1]=d3.select("#"+pan.id).property("offsetTop")+d3.select(".infotip").property("clientHeight")+d.y+d.r;
+				xy[0]=d3.select("#"+pan.id).property("offsetLeft")+d3.min([700,d.x-110]);
+				xy[1]=d3.select("#"+pan.id).property("offsetTop")+d.y-d.r+15;
 			
 			pan.panel.transition().style({top:xy[1]+"px",left:xy[0]+"px",display:"block",width:"200px"});
 			d3.select(this).style("stroke","black");

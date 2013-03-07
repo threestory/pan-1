@@ -819,8 +819,8 @@
 			pan.panel.selectAll("p").append("span").classed("value",1).html(function(d) {return (d.title?"":"&nbsp;")+d.value;}).style("font-weight",function(d) {return d.title?"bold":null;})
 			
 			var xy=[];
-				xy[0]=d3.select("#"+pan.id).property("offsetLeft")+d3.min([700,d.x-110]);
-				xy[1]=d3.select("#"+pan.id).property("offsetTop")+d.y-d.r-d3.select(".infotip").property("clientHeight");
+				xy[0]=d3.select("#"+pan.id).property("offsetLeft")+d3.min([700,d.x-114]);
+				xy[1]=d3.select("#"+pan.id).property("offsetTop")-d3.select(".infotip").property("clientHeight")+d.y-d.r;
 			
 			pan.panel.transition().style({top:xy[1]+"px",left:xy[0]+"px",display:"block",width:"200px"});
 			d3.select(this).style("stroke","black");

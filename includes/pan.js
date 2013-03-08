@@ -817,10 +817,14 @@
 			pan.panel.selectAll("p").data(infotip).enter().append("p").style("margin",0);
 			pan.panel.selectAll("p").append("span").classed("label",1).html(function(d) {return d.label;}).style("color","#9F9892")
 			pan.panel.selectAll("p").append("span").classed("value",1).html(function(d) {return (d.title?"":"&nbsp;")+d.value;}).style("font-weight",function(d) {return d.title?"bold":null;})
-			
+
 			var xy=[];
-				xy[0]=d3.select("#"+pan.id).property("offsetLeft")+d3.min([700,d.x-114]);
-				xy[1]=d3.select("#"+pan.id).property("offsetTop")-d3.select(".infotip").property("clientHeight")+d.y-d.r;
+			xy[0]=d3.select("#"+pan.id).property("offsetLeft")+d3.min([700,d.x-114]);
+			if(pan.main=="applications") {
+				xy[1]=d3.select("#"+pan.id).property("offsetTop")+d.y-d.r
+			} else {
+				xy[1]=d3.select("#"+pan.id).property("offsetTop")+d.y-d.r+30;
+			}
 			
 			pan.panel.transition().style({top:xy[1]+"px",left:xy[0]+"px",display:"block",width:"200px"});
 			d3.select(this).style("stroke","black");
@@ -1109,6 +1113,7 @@ pan.setInterface = function() {
 				"-moz-border-radius":"5px",
 				"background-color":"white",
 				"box-shadow":"0px 0px 5px #AAA",
+				"z-index":"100",
 				border:"0px solid #5D584F" 
 			})
 		pan.force = d3.layout.force()
